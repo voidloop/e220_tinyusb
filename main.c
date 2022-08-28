@@ -77,8 +77,8 @@ void cdc_task() {
     {
         // connected and there are data available
         if (tud_cdc_available()) {
-            // read datas
-            char buf[64];
+            // read data
+            char buf[400];
             uint32_t count = tud_cdc_read(buf, sizeof(buf));
             (void) count;
 
