@@ -8,10 +8,6 @@ bool read_parameters(radio_inst_t *radio, parameters_t *params);
 
 bool write_parameters(radio_inst_t *radio, parameters_t *params, bool save);
 
-void wait_aux_high(radio_inst_t *radio);
-
-void set_operating_mode(radio_inst_t *radio, operating_mode_t mode);
-
 bool radio_init(radio_inst_t *radio) {
     gpio_init(radio->aux_pin);
     gpio_set_dir(radio->aux_pin, GPIO_IN);

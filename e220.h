@@ -80,8 +80,6 @@
 #define RH_E220_DEFAULT_UART_MODE       RH_E220_PARAM_SPED_UART_MODE_8N1
 #define RH_E220_DEFAULT_UART_BAUD       RH_E220_PARAM_SPED_UART_BAUD_9600
 
-#define RH_E220_CONFIG_UART_BAUD        9600
-
 #include <hardware/uart.h>
 
 /// Structure for defining a radio instance

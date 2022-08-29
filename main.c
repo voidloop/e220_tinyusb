@@ -41,7 +41,7 @@ void led_blinking_task(void);
 void cdc_task(void);
 
 //--------------------------------------------------------------------+
-// Main
+// Main functions
 //--------------------------------------------------------------------+
 
 inline void loop(void) {
@@ -53,6 +53,7 @@ inline void loop(void) {
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
+
 int main(void) {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
@@ -70,6 +71,7 @@ int main(void) {
         loop();
     }
 }
+
 #pragma clang diagnostic pop
 
 //--------------------------------------------------------------------+
@@ -77,12 +79,12 @@ int main(void) {
 //--------------------------------------------------------------------+
 
 // Invoked when device is mounted
-void tud_mount_cb() {
+void tud_mount_cb(void) {
     blink_interval_ms = BLINK_MOUNTED;
 }
 
 // Invoked when device is unmounted
-void tud_umount_cb() {
+void tud_umount_cb(void) {
     blink_interval_ms = BLINK_NOT_MOUNTED;
 }
 
@@ -95,7 +97,7 @@ void tud_suspend_cb(bool remote_wakeup_en) {
 }
 
 // Invoked when usb bus is resumed
-void tud_resume_cb() {
+void tud_resume_cb(void) {
     blink_interval_ms = BLINK_MOUNTED;
 }
 
@@ -157,7 +159,10 @@ void led_blinking_task(void) {
     uint32_t now_ms = to_ms_since_boot(get_absolute_time());
 
     // Blink every interval ms
-    if (now_ms - start_ms < blink_interval_ms) return; // not enough time
+    if (now_ms - start_ms < blink_interval_ms) {
+        return; // not enough time
+    }
+
     start_ms += blink_interval_ms;
 
     gpio_put(LED_PIN, led_state);
