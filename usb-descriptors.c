@@ -24,10 +24,10 @@
 #define USBD_ITF_MAX 4
 
 #define USBD_CDC_0_EP_CMD 0x81
-//#define USBD_CDC_1_EP_CMD 0x84
 #define USBD_CDC_0_EP_OUT 0x02
-//#define USBD_CDC_1_EP_OUT 0x05
 #define USBD_CDC_0_EP_IN 0x82
+//#define USBD_CDC_1_EP_CMD 0x84
+//#define USBD_CDC_1_EP_OUT 0x05
 //#define USBD_CDC_1_EP_IN 0x85
 #define USBD_CDC_CMD_MAX_SIZE 8
 #define USBD_CDC_IN_OUT_MAX_SIZE 64
