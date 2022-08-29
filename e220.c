@@ -25,6 +25,10 @@ bool radio_init(radio_inst_t *radio) {
     uart_set_hw_flow(radio->uart, false, false);
     uart_set_format(radio->uart, 8, 1, UART_PARITY_NONE);
 
+    // Prevent glitches at startup
+    gpio_put(radio->m0_pin, true);
+    gpio_put(radio->m1_pin, true);
+
     parameters_t current_params;
     if (!read_parameters(radio, &current_params))
         return false;

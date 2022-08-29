@@ -116,10 +116,6 @@ void cdc_task(void) {
             uint32_t len = tud_cdc_read(buf, MIN(MAX_SENT - sent, BUFFER_SIZE));
             uart_write_blocking(radio.uart, (uint8_t *) buf, len);
             sent += len;
-
-            len = sprintf((char *) buf, "pos==%lu\r\n", sent);
-            tud_cdc_write(buf, len);
-            tud_cdc_write_flush();
         }
 
         // Read available data
