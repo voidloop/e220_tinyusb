@@ -2,6 +2,8 @@
 #include <hardware/uart.h>
 #include <tusb.h>
 
+#include "e220.h"
+
 #ifndef PICO_DEFAULT_LED_PIN
 #error LoRa bridge requires a board with a regular LED
 #endif
@@ -13,17 +15,21 @@
 #define LED_PIN PICO_DEFAULT_LED_PIN
 #define BUFFER_SIZE 64
 #define MAX_SENT 400
-#define AUX_PIN 6
-#define UART uart0
-#define TX_PIN 0
-#define RX_PIN 1
-#define M0_PIN 3
-#define M1_PIN 4
 
 enum {
+    BLINK_FAILED = 100,
     BLINK_NOT_MOUNTED = 250,
     BLINK_MOUNTED = 1000,
     BLINK_SUSPENDED = 2500,
+};
+
+radio_inst_t radio = {
+        .uart = uart0,
+        .tx_pin = 0,
+        .rx_pin = 1,
+        .m0_pin = 2,
+        .m1_pin = 3,
+        .aux_pin = 6
 };
 
 char buf[BUFFER_SIZE];
@@ -45,36 +51,26 @@ inline void loop(void) {
     cdc_task();
 }
 
-
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 int main(void) {
-    tusb_init();
-
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
-    gpio_init(AUX_PIN);
-    gpio_set_dir(AUX_PIN, GPIO_IN);
+    if (!radio_init(&radio)) {
+        blink_interval_ms = BLINK_FAILED;
+        while (true) {
+            led_blinking_task();
+        }
+    }
 
-    gpio_init(M0_PIN);
-    gpio_set_dir(M0_PIN, GPIO_OUT);
+    tusb_init();
 
-    gpio_init(M1_PIN);
-    gpio_set_dir(M1_PIN, GPIO_OUT);
-
-    gpio_set_function(TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(RX_PIN, GPIO_FUNC_UART);
-
-    uart_init(UART, 9600);
-    uart_set_hw_flow(UART, false, false);
-    uart_set_format(UART, 8, 1, UART_PARITY_NONE);
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
     while (true) {
         loop();
     }
-#pragma clang diagnostic pop
 }
+#pragma clang diagnostic pop
 
 //--------------------------------------------------------------------+
 // Device callbacks
@@ -109,14 +105,14 @@ void cdc_task(void) {
     // if ( tud_cdc_connected() )
     {
         // Reset sent counter if the module is not busy
-        if (gpio_get(AUX_PIN) == 1) {
+        if (gpio_get(radio.aux_pin) == 1) {
             sent = 0;
         }
 
         // Send available data if the module buffer is not full
         if (sent < MAX_SENT && tud_cdc_available()) {
             uint32_t len = tud_cdc_read(buf, MIN(MAX_SENT - sent, BUFFER_SIZE));
-            uart_write_blocking(UART, (uint8_t *)buf, len);
+            uart_write_blocking(radio.uart, (uint8_t *) buf, len);
             sent += len;
 
             len = sprintf((char *) buf, "pos==%lu\r\n", sent);
@@ -125,8 +121,8 @@ void cdc_task(void) {
         }
 
         // Read available data
-        while (uart_is_readable(UART)) {
-            char ch = uart_getc(UART);
+        while (uart_is_readable(radio.uart)) {
+            char ch = uart_getc(radio.uart);
             tud_cdc_write_char(ch);
             tud_cdc_write_flush();
         }
