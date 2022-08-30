@@ -82,34 +82,46 @@
 
 #include <hardware/uart.h>
 
-// Structure for defining a radio instance
+/// Structure for a radio instance
 typedef struct {
     uart_inst_t *uart;
-    uint aux_pin;
-    uint m0_pin;
-    uint m1_pin;
     uint tx_pin;
     uint rx_pin;
+    uint m0_pin;
+    uint m1_pin;
+    uint aux_pin;
 } radio_inst_t;
 
-// Defines values to be passed to set_operating_mode
+/// Defines values to be passed to set_operating_mode
 typedef enum {
-    MODE_NORMAL = 0,    //< Normal mode for sending and receiving messages
-    MODE_WAKE_UP,       //< Adds a long preamble to transmission to allow destination receivers to wake up
-    MODE_POWER_SAVING,  //< Receiver sleeps until a message is received
-    MODE_SLEEP          //< Use during parameter setting
+    MODE_NORMAL = 0,    ///< Normal mode for sending and receiving messages
+    MODE_WAKE_UP,       ///< Adds a long preamble to transmission to allow destination receivers to wake up
+    MODE_POWER_SAVING,  ///< Receiver sleeps until a message is received
+    MODE_SLEEP          ///< Use during parameter setting
 } operating_mode_t;
 
-// Structure for reading and writing radio control parameters
+/// Structure for reading and writing radio control parameters
 typedef struct {
-    uint8_t addh;      //< High address byte (not used by this driver)
-    uint8_t addl;      //< Low address byte (not used by this driver)
-    uint8_t sped;      //< Data and baud rate parameters
-    uint8_t opt1;      //< Various control options
-    uint8_t chan;      //< Radio channel
-    uint8_t opt2;      //< Various control options
+    uint8_t addh;      ///< High address byte (not used by this driver)
+    uint8_t addl;      ///< Low address byte (not used by this driver)
+    uint8_t sped;      ///< Data and baud rate parameters
+    uint8_t opt1;      ///< Various control options
+    uint8_t chan;      ///< Radio channel
+    uint8_t opt2;      ///< Various control options
 } parameters_t;
 
 bool radio_init(radio_inst_t *radio);
+
+bool read_parameters(radio_inst_t *radio, parameters_t *params);
+
+bool write_parameters(radio_inst_t *radio, parameters_t *params, bool save);
+
+void set_operating_mode(radio_inst_t *radio, operating_mode_t mode);
+
+void wait_aux_high(radio_inst_t *radio);
+
+void set_radio_uart_config_mode(radio_inst_t *radio);
+
+void set_radio_uart(radio_inst_t *radio, uint8_t sped);
 
 #endif //_LORA_BRIDGE_E220_H_
