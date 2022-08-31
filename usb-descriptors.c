@@ -1,14 +1,3 @@
-// SPDX-License-Identifier: MIT
-/*
- * Copyright (c) 2021 Álvaro Fernández Rojas <noltari@gmail.com>
- *
- * This file is based on a file originally part of the
- * MicroPython project, http://micropython.org/
- *
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- * Copyright (c) 2019 Damien P. George
- */
-
 #include <tusb.h>
 
 #define USBD_VID 0x2E8A /* Raspberry Pi */
@@ -30,7 +19,6 @@
 #define USBD_STR_SERIAL 0x03
 #define USBD_STR_CDC 0x04
 #define USBD_STR_HID 0x00
-
 
 //--------------------------------------------------------------------+
 // Device Descriptors
@@ -68,7 +56,7 @@ uint8_t const desc_hid_report[] = {
 };
 
 // Invoked when received GET HID REPORT DESCRIPTOR
-// Application return pointer to descriptor
+// Application return pointer to descriptor,
 // Descriptor contents must exist long enough for transfer to complete
 uint8_t const *tud_hid_descriptor_report_cb(uint8_t itf) {
     (void) itf;
