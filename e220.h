@@ -102,26 +102,26 @@ typedef enum {
 
 /// Structure for reading and writing radio control parameters
 typedef struct {
-    uint8_t addh;      ///< High address byte (not used by this driver)
-    uint8_t addl;      ///< Low address byte (not used by this driver)
+    uint8_t addh;      ///< High address byte
+    uint8_t addl;      ///< Low address byte
     uint8_t sped;      ///< Data and baud rate parameters
     uint8_t opt1;      ///< Various control options
     uint8_t chan;      ///< Radio channel
     uint8_t opt2;      ///< Various control options
 } parameters_t;
 
-bool radio_init(radio_inst_t *radio);
+bool radio_init(radio_inst_t const *radio);
 
-bool read_parameters(radio_inst_t *radio, parameters_t *params);
+bool read_parameters(radio_inst_t const *radio, parameters_t *params);
 
-bool write_parameters(radio_inst_t *radio, parameters_t *params, bool save);
+bool write_parameters(radio_inst_t const *radio, parameters_t const *params, bool save);
 
-void set_operating_mode(radio_inst_t *radio, operating_mode_t mode);
+void set_operating_mode(radio_inst_t const *radio, operating_mode_t mode);
 
-void wait_aux_high(radio_inst_t *radio);
+void wait_aux_high(radio_inst_t const *radio);
 
-void set_radio_uart_config_mode(radio_inst_t *radio);
+void set_radio_uart_config_mode(radio_inst_t const *radio);
 
-void set_radio_uart(radio_inst_t *radio, uint8_t sped);
+void set_radio_uart(radio_inst_t const *radio, uint8_t sped);
 
 #endif //_LORA_BRIDGE_E220_H_

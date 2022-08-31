@@ -2,6 +2,7 @@
 #include <hardware/uart.h>
 #include <tusb.h>
 
+#include "usb_command.h"
 #include "e220.h"
 
 #ifndef PICO_DEFAULT_LED_PIN
@@ -35,7 +36,6 @@ radio_inst_t radio = {
 char buf[BUFFER_SIZE];
 uint32_t sent = 0;
 uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
-cdc_line_coding_t usb_lc;
 
 void led_blinking_task(void);
 
@@ -152,7 +152,7 @@ void tud_cdc_rx_cb(uint8_t itf) {
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request
 uint16_t tud_hid_get_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_type,
-                               uint8_t *buffer, uint16_t reqlen) {
+                               uint8_t *buffer, uint16_t reqlen) { // NOLINT(readability-non-const-parameter)
     // TODO not Implemented
     (void) itf;
     (void) report_id;
@@ -171,26 +171,16 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
     (void) report_id;
     (void) report_type;
 
-    // Default response: "Wrong Format"
-    char response[CFG_TUD_HID_EP_BUFSIZE] = {0xFF, 0xFF, 0xFF};
-    parameters_t params;
-    bool save = false;
+    // Echo the first byte of the request
+    uint8_t response[CFG_TUD_HID_EP_BUFSIZE] = {buffer[0]};
 
     // Proxy command to radio module
     switch (buffer[0]) {
-        case RH_E220_COMMAND_READ_PARAMS:
-            if (read_parameters(&radio, &params)) {
-                memcpy(response, &params, sizeof(parameters_t));
-            }
+        case USB_COMMAND_READ_PARAMS:
+            usb_command_read_params(&radio, response, buffer, bufsize);
             break;
-
-        case RH_E220_COMMAND_WRITE_PARAMS_SAVE:
-            save = true;
-        case RH_E220_COMMAND_WRITE_PARAMS_NOSAVE:
-            memcpy(&params, &buffer[1], sizeof(parameters_t));
-            if (write_parameters(&radio, &params, save)) {
-                memcpy(response, &params, sizeof(parameters_t));
-            }
+        case USB_COMMAND_WRITE_PARAMS:
+            usb_command_write_params(&radio, response, buffer, bufsize);
             break;
         default:
             break;

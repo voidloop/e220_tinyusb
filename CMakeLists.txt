@@ -8,18 +8,16 @@ pico_sdk_init()
 
 add_executable(lora_bridge
         main.c
+        usb_command.c
         usb-descriptors.c
-        e220.c
-        )
+        e220.c)
 
 target_include_directories(lora_bridge PUBLIC
         ./
-        ${PICO_SDK_PATH}/lib/tinyusb/src
-        )
+        ${PICO_SDK_PATH}/lib/tinyusb/src)
 
 target_link_libraries(lora_bridge
         pico_stdlib
-        tinyusb_device
-        )
+        tinyusb_device)
 
 pico_add_extra_outputs(lora_bridge)

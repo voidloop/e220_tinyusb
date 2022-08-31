@@ -5,7 +5,7 @@
 
 #include "e220.h"
 
-bool radio_init(radio_inst_t *radio) {
+bool radio_init(radio_inst_t const *radio) {
     gpio_init(radio->aux_pin);
     gpio_set_dir(radio->aux_pin, GPIO_IN);
 
@@ -26,30 +26,10 @@ bool radio_init(radio_inst_t *radio) {
         return false;
 
     set_radio_uart(radio, params.sped);
-
-//    parameters_t default_params;
-//    default_params.addh = RH_E220_DEFAULT_ADDRESS_HIGH;
-//    default_params.addl = RH_E220_DEFAULT_ADDRESS_LOW;
-//    default_params.chan = RH_E220_DEFAULT_CHANNEL;
-//    default_params.sped = RH_E220_DEFAULT_UART_BAUD |
-//                          RH_E220_DEFAULT_UART_MODE |
-//                          RH_E220_DEFAULT_DATA_RATE;
-//    default_params.opt1 = RH_E220_DEFAULT_TX_POWER;
-//    default_params.opt2 = RH_E220_DEFAULT_WOR_CYCLE;
-//
-//#ifdef RH_E220_RSSI_BYTE_ENABLED
-//    default_params.opt2 |= RH_E220_PARAM_OPT2_RSSI_BYTE_ENABLE;
-//#endif
-//
-//    if (memcmp(&default_params, &current_params, sizeof(parameters_t)) != 0) {
-//        if (!write_parameters(radio, &default_params, true))
-//            return false;
-//    }
-
     return true;
 }
 
-bool read_parameters(radio_inst_t *radio, parameters_t *params) {
+bool read_parameters(radio_inst_t const *radio, parameters_t *params) {
     set_operating_mode(radio, MODE_SLEEP);
 
     uint8_t command[] = {RH_E220_COMMAND_READ_PARAMS, 0x00, sizeof(parameters_t)};
@@ -75,7 +55,7 @@ bool read_parameters(radio_inst_t *radio, parameters_t *params) {
     return true;
 }
 
-bool write_parameters(radio_inst_t *radio, parameters_t *params, bool save) {
+bool write_parameters(radio_inst_t const *radio, parameters_t const *params, bool save) {
     set_operating_mode(radio, MODE_SLEEP);
 
     uint8_t head = save ? RH_E220_COMMAND_WRITE_PARAMS_SAVE : RH_E220_COMMAND_WRITE_PARAMS_NOSAVE;
@@ -104,7 +84,7 @@ bool write_parameters(radio_inst_t *radio, parameters_t *params, bool save) {
     return true;
 }
 
-void set_operating_mode(radio_inst_t *radio, operating_mode_t mode) {
+void set_operating_mode(radio_inst_t const *radio, operating_mode_t mode) {
     wait_aux_high(radio);
     sleep_ms(10);
 
@@ -132,18 +112,18 @@ void set_operating_mode(radio_inst_t *radio, operating_mode_t mode) {
     }
 
     wait_aux_high(radio);
-    sleep_ms(10); // Takes a little while to start its response
+    sleep_ms(50); // Takes a little while to start its response
 }
 
-void wait_aux_high(radio_inst_t *radio) {
+void wait_aux_high(radio_inst_t const *radio) {
     while (gpio_get(radio->aux_pin) == false);
 }
 
-void set_radio_uart_config_mode(radio_inst_t *radio) {
+void set_radio_uart_config_mode(radio_inst_t const *radio) {
     set_radio_uart(radio, RH_E220_PARAM_SPED_UART_BAUD_9600 | RH_E220_PARAM_SPED_UART_MODE_8N1);
 }
 
-void set_radio_uart(radio_inst_t *radio, uint8_t sped) {
+void set_radio_uart(radio_inst_t const *radio, uint8_t sped) {
     // Baud rate
     switch (sped & RH_E220_PARAM_SPED_UART_BAUD_MASK) {
         case RH_E220_PARAM_SPED_UART_BAUD_1200:
