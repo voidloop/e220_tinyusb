@@ -3,7 +3,7 @@
 #include <tusb.h>
 
 #include "usb_command.h"
-#include "e220.h"
+#include "radio.h"
 
 #ifndef PICO_DEFAULT_LED_PIN
 #error LoRa bridge requires a board with a regular LED

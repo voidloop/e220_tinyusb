@@ -9,8 +9,8 @@ pico_sdk_init()
 add_executable(lora_bridge
         main.c
         usb_command.c
-        usb-descriptors.c
-        e220.c)
+        usb_descriptors.c
+        radio.c)
 
 target_include_directories(lora_bridge PUBLIC
         ./
