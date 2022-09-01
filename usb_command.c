@@ -7,7 +7,7 @@
 // +---------+---------------------+-------------+-------------------------------------------+
 // | 0       | -                   | 0xB0        | Read radio parameters                     |
 // +---------+---------------------+-------------+-------------------------------------------+
-// | 8-63    | Don't care          | Any Value   | -                                         |
+// | 1-63    | Don't care          | Any Value   | -                                         |
 // +---------+---------------------+-------------+-------------------------------------------+
 //
 // Command response:
@@ -108,7 +108,6 @@ bool usb_command_read_params(radio_inst_t const *radio, uint8_t *response, uint8
 // +---------+---------------------+-------------+-------------------------------------------+
 // | 8-63    | Don't care          | Any Value   | -                                         |
 // +---------+---------------------+-------------+-------------------------------------------+
-
 bool usb_command_write_params(radio_inst_t const *radio, uint8_t *response, uint8_t const *buffer, uint32_t bufsize) {
     // No enough bytes in the request
     if (bufsize < sizeof(parameters_t) + 2) {
