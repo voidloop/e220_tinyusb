@@ -179,9 +179,11 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
         case USB_COMMAND_READ_PARAMS:
             usb_command_read_params(&radio, response, buffer, bufsize);
             break;
+
         case USB_COMMAND_WRITE_PARAMS:
             usb_command_write_params(&radio, response, buffer, bufsize);
             break;
+
         default:
             break;
     }

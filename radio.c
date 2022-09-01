@@ -128,24 +128,31 @@ void set_radio_uart(radio_inst_t const *radio, uint8_t sped) {
         case RADIO_PARAM_SPED_UART_BAUD_1200:
             uart_init(radio->uart, 1200);
             break;
+
         case RADIO_PARAM_SPED_UART_BAUD_2400:
             uart_init(radio->uart, 2400);
             break;
+
         case RADIO_PARAM_SPED_UART_BAUD_4800:
             uart_init(radio->uart, 4800);
             break;
+
         case RADIO_PARAM_SPED_UART_BAUD_19200:
             uart_init(radio->uart, 19200);
             break;
+
         case RADIO_PARAM_SPED_UART_BAUD_38400:
             uart_init(radio->uart, 38400);
             break;
+
         case RADIO_PARAM_SPED_UART_BAUD_57600:
             uart_init(radio->uart, 57600);
             break;
+
         case RADIO_PARAM_SPED_UART_BAUD_115200:
             uart_init(radio->uart, 115200);
             break;
+
         default:
             uart_init(radio->uart, 9600);
             break;
@@ -156,9 +163,11 @@ void set_radio_uart(radio_inst_t const *radio, uint8_t sped) {
         case RADIO_PARAM_SPED_UART_MODE_8E1:
             uart_set_format(radio->uart, 8, 1, UART_PARITY_EVEN);
             break;
+
         case RADIO_PARAM_SPED_UART_MODE_8O1:
             uart_set_format(radio->uart, 8, 1, UART_PARITY_ODD);
             break;
+
         default:
             uart_set_format(radio->uart, 8, 1, UART_PARITY_NONE);
             break;
