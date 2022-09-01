@@ -110,8 +110,6 @@ bool usb_command_read_params(radio_inst_t const *radio, uint8_t *response, uint8
 // +---------+---------------------+-------------+-------------------------------------------+
 
 bool usb_command_write_params(radio_inst_t const *radio, uint8_t *response, uint8_t const *buffer, uint32_t bufsize) {
-    (void) bufsize;
-
     // No enough bytes in the request
     if (bufsize < sizeof(parameters_t) + 2) {
         response[1] = USB_COMMAND_FAILED;
